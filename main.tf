@@ -42,6 +42,19 @@ data "aws_iam_policy_document" "allow_ssl_requests_only" {
     }
     resources = [aws_s3_bucket.this.arn, "${aws_s3_bucket.this.arn}/*"]
   }
+  statement {
+    sid    = "S3BucketAccess"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_caller_identity.current.account_id]
+    }
+    actions = [
+      "s3:*"
+    ]
+    resources = [aws_s3_bucket.this.arn, "${aws_s3_bucket.this.arn}/*"]
+  }
+  depends_on = [aws_s3_bucket.this]
 }
 
 # Uncomment it when S3 bucket policy is fixed.
@@ -93,33 +106,21 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
   rule {
     apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.this.arn
+      kms_master_key_id = module.aws_kms.id
       sse_algorithm     = "aws:kms"
     }
   }
 }
 
-resource "aws_kms_key" "this" {
-  description             = "s3 bucket encryption key"
-  deletion_window_in_days = 10
+
+module "aws_kms" {
+  source = "../aws-kms"
+  #source = "git::https://github.com/e2eSolutionArchitect/terraform-aws-kms.git?ref=v1.0.0"
+  kms_name                = "s3 bucket encryption key for ${var.s3_bucket_name}"
+  kms_alias               = var.s3_bucket_name
+  deletion_window_in_days = var.deletion_window_in_days
   enable_key_rotation     = var.enable_key_rotation
   is_enabled              = var.is_enabled
-  policy                  = <<POLICY
-  {
-    "Version": "2012-10-17",
-    "Id": "DefaultAllow",
-    "Statement": {
-      "Sid": "DefaultAllow",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      },
-      "Action": "kms:*",
-      "Resource": "*"
-    }
-  }
-
-  POLICY
   tags                    = var.tags
 }
 
