@@ -56,19 +56,6 @@ variable "control_object_ownership" {
   default     = "Enabled"
 }
 
-variable "create_folder" {
-  description = "s3 create_folder"
-  type        = bool
-  default     = false
-}
-
-variable "folder_name" {
-  description = "s3 folder_name"
-  type        = string
-  default     = null
-}
-
-
 variable "attach_policy" {
   description = "s3 attach_policy"
   type        = bool
@@ -96,6 +83,11 @@ variable "is_enabled_eventbridge" {
 variable "iam_policy_identifier" {
   type        = list(string)
   description = "iam policy identifier"
+}
+
+variable "folder_names" {
+  type        = set(string)
+  description = "folders in s3 bucket"
 }
 
 

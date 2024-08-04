@@ -11,9 +11,9 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_object" "folder" {
-  count                  = var.create_folder ? 1 : 0
+  for_each            = var.folder_names
   bucket                 = aws_s3_bucket.this.id
-  key                    = var.folder_name
+  key                    = each.value
   server_side_encryption = "aws:kms"
 }
 
@@ -114,8 +114,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
 
 module "aws_kms" {
-  source = "../aws-kms"
-  #source = "git::https://github.com/e2eSolutionArchitect/terraform-aws-kms.git?ref=v1.0.0"
+  #source = "../aws-kms"
+  source                  = "git::https://github.com/e2eSolutionArchitect/terraform-aws-kms.git?ref=v1.0.0"
   kms_name                = "s3 bucket encryption key for ${var.s3_bucket_name}"
   kms_alias               = var.s3_bucket_name
   deletion_window_in_days = var.deletion_window_in_days
