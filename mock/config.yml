@@ -1,0 +1,44 @@
+
+# Tags
+# ------------------------------------------------------------ #
+
+tags:
+- project      : "project-name"
+  workloadname : "workloadname"
+  desc         : "desc"
+  createdby    : "system"
+  orgunit      : "OU001"
+  businessunit : "BU001"
+  costcenter   : "CC001"
+  environment  : "dev"
+  owner        : "owner@domain.com"
+  supportcentre  : "support@domain.com"
+
+# Amazon S3
+# ------------------------------------------------------------ #
+
+s3:
+- name: demovm01
+  acl: false
+  enable_force_destroy: true
+  folder_names: ["upload","ouput"]
+  control_object_ownership: true
+  s3_versioning: false
+  enable_lifecycle_rule: true
+  source_account: ''
+  kms:
+  - name: kms01
+    deletion_window_in_days: 30
+    enable_key_rotation: true
+    is_enabled: true
+  iam:
+  - name: policy01
+    attach_policy: true
+    policy_statements: ""
+  notification:
+  - name: lambdatrg01
+    lambda_notifications:
+    is_enabled_eventbridge: false
+    
+  
+  

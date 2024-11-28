@@ -7,7 +7,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_s3_bucket" "this" {
   bucket        = var.s3_bucket_name
   force_destroy = var.enable_force_destroy
-  tags          = merge({ "ResourceName" = var.s3_bucket_name }, var.tags)
+  tags          = merge({ "resourcename" = var.s3_bucket_name }, var.tags)
 }
 
 resource "aws_s3_object" "folder" {
