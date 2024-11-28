@@ -20,7 +20,6 @@ variable "global" {
   }
 }
 
-
 variable "aws_region" {
   description = "AWS infrastructure"
   type        = string

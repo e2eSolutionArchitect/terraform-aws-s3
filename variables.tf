@@ -11,7 +11,6 @@ variable "aws_region" {
 variable "tags" {
   description = "Tag map for the resource"
   type        = map(string)
-  default     = {}
 }
 
 
